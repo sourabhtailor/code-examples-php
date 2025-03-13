@@ -45,6 +45,14 @@ jobs:
       with:
           args: |
             -Dsonar.qualitygate.wait=true
+    - name: Run tests
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          IMPERSONATED_USER_ID: ${{ secrets.IMPERSONATED_USER_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SIGNER_EMAIL: ${{ secrets.SIGNER_EMAIL }}
+          SIGNER_NAME: ${{ secrets.SIGNER_NAME }}
+        run: composer run-script test        
 
   send_email_on_failure:
     needs: build
@@ -76,11 +84,4 @@ jobs:
           #echo -e "Subject:$EMAIL_SUBJECT\nTo:${ADMIN_EMAIL}\nFrom:${GMAIL_USERNAME}\n\n$EMAIL_BODY" | \
           #  msmtp --host=smtp.gmail.com --port=587 --tls --auth=on --user=$GMAIL_USERNAME --passwordeval="echo $GMAIL_PASSWORD" --from=$GMAIL_USERNAME $ADMIN_EMAIL          
 
-      - name: Run tests
-        env:
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          IMPERSONATED_USER_ID: ${{ secrets.IMPERSONATED_USER_ID }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          SIGNER_EMAIL: ${{ secrets.SIGNER_EMAIL }}
-          SIGNER_NAME: ${{ secrets.SIGNER_NAME }}
-        run: composer run-script test
+
