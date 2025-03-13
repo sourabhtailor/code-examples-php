@@ -41,13 +41,42 @@ jobs:
       uses: sonarsource/sonarqube-scan-action@master
       env:
         SONAR_TOKEN: 4d8c6ef25170af09344e8a0c5adfd35c62774a27 
-        SONAR_HOST_URL: https://sonarcloud.io  
+        SONAR_HOST_URL: https://sonarcloud.io
+      with:
+          args: |
+            -Dsonar.qualitygate.wait=true
 
-    - name: Run tests
-      env:
+  send_email_on_failure:
+    needs: build
+    runs-on: ubuntu-latest
+    if: failure()  # This ensures the email is sent only if the SonarQube scan fails
+    steps:
+      - name: Send email notification on failure
+        env:
+          GMAIL_USERNAME: ${{ secrets.GMAIL_USERNAME }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
+          #ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+        run: |
+          echo "Sending email to committer and admin"
+          
+          # Set the email subject and body
+          EMAIL_SUBJECT="SonarQube Scan Failed: Action Required"
+          EMAIL_BODY="Hello,\n\nThe SonarQube scan for your commit failed. Please check the quality gate results.\n\nCommitter: ${{ github.actor }}\n\nBest Regards,\nCI/CD Pipeline"
+
+          # Send email to committer and admin using Gmail SMTP
+          echo -e "Subject:$EMAIL_SUBJECT\nTo:${COMMITTER_EMAIL}\nFrom:${GMAIL_USERNAME}\n\n$EMAIL_BODY" | \
+            msmtp --host=smtp.gmail.com --port=587 --tls --auth=on --user=$GMAIL_USERNAME --passwordeval="echo $GMAIL_PASSWORD" --from=$GMAIL_USERNAME $COMMITTER_EMAIL
+
+          # Send email to admin as well
+          #echo -e "Subject:$EMAIL_SUBJECT\nTo:${ADMIN_EMAIL}\nFrom:${GMAIL_USERNAME}\n\n$EMAIL_BODY" | \
+          #  msmtp --host=smtp.gmail.com --port=587 --tls --auth=on --user=$GMAIL_USERNAME --passwordeval="echo $GMAIL_PASSWORD" --from=$GMAIL_USERNAME $ADMIN_EMAIL          
+
+      - name: Run tests
+        env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           IMPERSONATED_USER_ID: ${{ secrets.IMPERSONATED_USER_ID }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SIGNER_EMAIL: ${{ secrets.SIGNER_EMAIL }}
           SIGNER_NAME: ${{ secrets.SIGNER_NAME }}
-      run: composer run-script test
+        run: composer run-script test
