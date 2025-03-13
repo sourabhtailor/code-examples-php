@@ -481,5 +481,7 @@ class RouterService implements IRouterService
     public function getTitle($eg): string
     {
         return ManifestService::getPageText($eg)['ExampleName'];
+    return $routeUrl;
     }
+
 }
