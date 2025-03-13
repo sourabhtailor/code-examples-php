@@ -51,6 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     if: failure()  # This ensures the email is sent only if the SonarQube scan fails
     steps:
+
+      - name: Install msmtp
+        run: sudo apt-get install msmtp
+    
       - name: Send email notification on failure
         env:
           GMAIL_USERNAME: ${{ secrets.GMAIL_USERNAME }}
