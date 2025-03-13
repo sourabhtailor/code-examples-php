@@ -46,13 +46,13 @@ jobs:
           args: |
             -Dsonar.qualitygate.wait=true
     - name: Run tests
-        env:
+      env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           IMPERSONATED_USER_ID: ${{ secrets.IMPERSONATED_USER_ID }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SIGNER_EMAIL: ${{ secrets.SIGNER_EMAIL }}
           SIGNER_NAME: ${{ secrets.SIGNER_NAME }}
-        run: composer run-script test        
+      run: composer run-script test        
 
   send_email_on_failure:
     needs: build
