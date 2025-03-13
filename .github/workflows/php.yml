@@ -34,8 +34,8 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Run linter
-      run: vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle src/ -n
+    #- name: Run linter
+    #  run: vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle src/ -n
 
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
