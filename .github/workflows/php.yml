@@ -39,7 +39,7 @@ jobs:
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@master
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} //Sonar Token generated 
+        SONAR_TOKEN: eec6d8d430321c43b66f4e1c2f435389ac084efa 
         SONAR_HOST_URL: https://sonarcloud.io  
 
     - name: Run tests
