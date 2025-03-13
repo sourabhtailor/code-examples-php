@@ -27,7 +27,7 @@ $twig_function = new Twig\TwigFunction('get_flash', function () {
     }
     $msgs = $_SESSION['flash'];
     $_SESSION['flash'] = [];
-    return $msgs;
+  #  return $msgs;
 });
 $twig->addFunction($twig_function);
 # Add csrf_token func. See https://stackoverflow.com/a/31683058/64904
